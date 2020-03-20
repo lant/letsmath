@@ -9,4 +9,10 @@
     </root>
     <logger name="org.eclipse.jetty" level="INFO"/>
     <logger name="io.netty" level="INFO"/>
+    <logger name="io.netty" level="INFO"/>
+
+    <logger name="org.thymeleaf" level="ERROR"/>
+    <logger name="org.thymeleaf.TemplateEngine.CONFIG" level="ERROR"/>
+    <logger name="org.thymeleaf.TemplateEngine.TIMER" level="ERROR"/>
+    <logger name="org.thymeleaf.TemplateEngine.cache.TEMPLATE_CACHE" level="ERROR"/>
 </configuration>

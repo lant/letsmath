@@ -1,10 +1,46 @@
 <!DOCTYPE html >
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
-<meta charset="UTF-8">
-<title>Title</title>
+    <meta charset="UTF-8"/>
+    <title>Math operations</title>
+    <script src="https://cdn.jsdelivr.net/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 </head>
 <body>
-<span th:text="${user.name}"></span>
+
+<script>
+$(document).ready(function () {
+    console.log("dom ready");
+    $("#ops").validate();
+    // alias required to cRequired with new message
+     $.validator.addMethod("cRequired", $.validator.methods.required, "Has de posar un número");
+     $.validator.addMethod("cNum", $.validator.methods.number, "Ha de ser un número");
+     // combine them both, including the parameter for minlength
+     $.validator.addClassRules("oper", { cRequired: true, cNum: true });
+});
+</script>
+
+<div class="container-fluid">
+
+<div th:include="header"></div>
+
+<h2>List of operations:</h2>
+<hr>
+<!--/*@thymesVar id="operations" type="kotlin"*/-->
+<form name="ops" id="ops" action="/validate" method="post">
+    <div th:each="op,iter : ${operations}" >
+        <label th:for="${iter.count}" th:text="${op.operation}"></label>:
+        <input th:class="oper" th:type="text" th:name="'response_'+${iter.count}" th:id="'response_'+${iter.count}" value=""><br><br>
+        <input th:name="'operation_'+${iter.count}" th:id="'operation_'+${iter.count}" type="hidden" th:value="${op.operation}">
+        <input th:name="'solution_'+${iter.count}" th:id="'solution_'+${iter.count}" type="hidden" th:value="${op.result}">
+    </div>
+
+  <input type="submit" value="Submit">
+</form>
+
+<div th:include="footer :: copy"></div>
+</div>
 </body>
 </html>

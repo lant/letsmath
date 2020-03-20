@@ -1,0 +1,27 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+<meta charset="UTF-8">
+<title>Math operations</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+
+<div th:include="header"></div>
+
+<h2>Results:</h2>
+<hr>
+
+<!--/*@thymesVar id="results" type=""*/-->
+<div th:each="result: ${results}" >
+    <th:block :class="${result.valid} ? 'right' : 'wrong'" th:text="${result.operation} + ' = ' + ${result.expected} + '('+${result.provided} +')'"></th:block>
+    <br>
+</div>
+
+<hr>
+<span th:text="${score}+'/'+${total}">a</span>
+
+<div th:include="footer :: copy"></div>
+</body>
+</html>

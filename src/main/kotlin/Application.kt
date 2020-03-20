@@ -9,9 +9,11 @@ import io.ktor.thymeleaf.ThymeleafContent
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
 import io.ktor.http.content.*
 import com.fasterxml.jackson.databind.*
+import com.github.lant.letsmath.com.github.lant.letsmath.OperationsController
 import io.ktor.jackson.*
 import io.ktor.features.*
 import io.ktor.locations.*
+import io.ktor.request.receiveParameters
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -41,53 +43,44 @@ fun Application.module(testing: Boolean = false) {
         method(HttpMethod.Delete)
         method(HttpMethod.Patch)
         header(HttpHeaders.Authorization)
-        header("MyCustomHeader")
         allowCredentials = true
         anyHost() // @TODO: Don't do this in production if possible. Try to limit it.
     }
 
     install(DataConversion)
 
+    val operationsController = OperationsController()
+
+    val numOperations = 10
+
     routing {
         get("/") {
-            call.respondText("HELLO WORLD!", contentType = ContentType.Text.Plain)
+            val operations = operationsController.getOperations(numOperations)
+            call.respond(ThymeleafContent("index", mapOf("operations" to operations)))
         }
 
-        get("/html-thymeleaf") {
-            call.respond(ThymeleafContent("index", mapOf("user" to ThymeleafUser(1, "user1"))))
+        post("/validate") {
+          val params = call.receiveParameters()
+
+           val results = (1..numOperations+1).map {
+                operationsController.evaluate(
+                    params["operation_${it}"]!!,
+                    params["response_${it}"]!!.toInt(),
+                    params["solution_${it}"]!!.toInt())
+            }
+            val score = results.count { it.valid }
+            val total = results.size
+
+          call.respond(ThymeleafContent("result", mapOf(
+              "results" to results,
+              "score" to score,
+              "total" to total)))
         }
 
         // Static feature. Try to access `/static/ktor_logo.svg`
         static("/static") {
             resources("static")
-        }
-
-        get("/json/jackson") {
-            call.respond(mapOf("hello" to "world"))
-        }
-
-        get<MyLocation> {
-            call.respondText("Location: name=${it.name}, arg1=${it.arg1}, arg2=${it.arg2}")
-        }
-        // Register nested routes
-        get<Type.Edit> {
-            call.respondText("Inside $it")
-        }
-        get<Type.List> {
-            call.respondText("Inside $it")
+            files("js")
         }
     }
-}
-
-data class ThymeleafUser(val id: Int, val name: String)
-
-@Location("/location/{name}")
-class MyLocation(val name: String, val arg1: Int = 42, val arg2: String = "default")
-
-@Location("/type/{name}") data class Type(val name: String) {
-    @Location("/edit")
-    data class Edit(val type: Type)
-
-    @Location("/list/{page}")
-    data class List(val type: Type, val page: Int)
 }
