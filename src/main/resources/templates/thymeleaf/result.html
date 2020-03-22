@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Math operations</title>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
 </head>
 <body>
 
@@ -13,11 +12,24 @@
 <h2>Results:</h2>
 <hr>
 
-<!--/*@thymesVar id="results" type=""*/-->
-<div th:each="result: ${results}" >
-    <th:block :class="${result.valid} ? 'right' : 'wrong'" th:text="${result.operation} + ' = ' + ${result.expected} + '('+${result.provided} +')'"></th:block>
-    <br>
-</div>
+<table>
+  <thead>
+    <tr>
+      <th>Bé / Malament</th>
+      <th>Operació</th>
+      <th>Resultat real<th>
+      <th>Input</th>
+    </tr>
+  </thead>
+    <tbody>
+        <tr th:each="result: ${results}" >
+            <td th:text="${result.valid}"></td>
+            <td th:text="${result.operation}"></td>
+            <td th:text="${result.expected}"></td>
+            <td th:text="${result.provided}"></td>
+        </tr>
+    </tbody>
+</table>
 
 <hr>
 <span th:text="${score}+'/'+${total}">a</span>
